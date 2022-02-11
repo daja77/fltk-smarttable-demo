@@ -31,7 +31,7 @@ fn main() {
     table.set_col_width(2, 210);
 
     table.set_cell_value(0, 0, "1");
-    table.set_cell_value(1, 0, "1");
+    table.set_cell_value(1, 0, "2");
 
     let date = Utc::today().naive_utc().to_string();
     table.set_cell_value(0, 1, date.clone().as_str());
@@ -40,12 +40,15 @@ fn main() {
     table.set_cell_value(0, 2, "first");
     table.set_cell_value(1, 2, "second");
 
+    let app = a.clone();
     table.set_callback(|t| {
-        println!("callback called!");
-        let r = t.callback_row();
-        println!("got called by row no: {}", r);
-        let c = t.callback_col();
-        println!("got called by col no: {}", c);
+        if app::event() == enums::Event::Push && t.callback_context() == table::TableContext::Cell {
+            println!("callback called!");
+            let r = t.callback_row();
+            println!("got called by row no: {}", r);
+            let c = t.callback_col();
+            println!("got called by col no: {}", c);
+        }
     });
     pack.end();
     win.end();
